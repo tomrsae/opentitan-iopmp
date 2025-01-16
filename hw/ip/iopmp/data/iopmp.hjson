@@ -79,5 +79,5 @@
 //    }
   ]
   regwidth: "32",
-//  registers: []
+  registers: []
 }

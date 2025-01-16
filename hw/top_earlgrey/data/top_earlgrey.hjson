@@ -34,6 +34,8 @@
     // { name: "my_ext" }
   ]
 
+
+
   // This is the clock data structure of the design.
   // The hier path refers to the clock reference path (struct / port)
   //   - The top/ext designation follows the same scheme as inter-module
@@ -986,9 +988,9 @@
       clock_group: "peri",
       reset_connections: {rst_ni: "lc_io_div4"},
       base_addr: {
-        hart: "0x41200000"",
+        hart: "0x41200000",
       },
-      attr: "normal"
+      //attr: "normal"
     }
   ],
 
