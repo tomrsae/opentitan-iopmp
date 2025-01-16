@@ -1,0 +1,83 @@
+{
+  name:               "iopmp",
+  human_name:         "IOPMP",
+  one_line_desc:      "I/O Protection Management Unit as proposed for RISC-V",
+  // Unique comportable IP identifier defined under KNOWN_CIP_IDS in the regtool.
+  cip_id:             "1337",
+  version:            "1.0.0",
+  clocking: [
+    {clock: "clk_i", reset: "rst_ni", primary: true},
+  ]
+  bus_interfaces: [
+    // primary
+    { protocol: "tlul", direction: "host" }
+    // config
+    { protocol: "tlul", direction: "device" }
+  ],
+  // **
+  // Peripherals?
+  available_inout_list: [],
+  available_input_list: [],
+  available_output_list: [],
+  // **
+  inter_signal_list: []
+  param_list: [
+    { name:    "IOPMPRegions",
+      type:    "int",
+      default: "6",
+      desc:    "??"
+      local:   "false",
+      expose:  "true"
+    },
+    { name:    "IOPMPNumChan",
+      type:    "int",
+      default: "3",
+      desc:    "??"
+      local:   "false",
+      expose:  "true"
+    },
+    { name:    "IOPMPMemoryDomains",
+      type:    "int",
+      default: "3",
+      desc:    "??"
+      local:   "false",
+      expose:  "true"
+    },
+    { name:    "NUM_MASTERS",
+      type:    "int",
+      default: "3",
+      desc:    "??"
+      local:   "false",
+      expose:  "true"
+    },
+    { name:    "IOPMPGranularity",
+      type:    "int",
+      default: "1",
+      desc:    "??"
+      local:   "false",
+      expose:  "true"
+    },
+  ],
+  interrupt_list: [
+    { name: "access_violation"
+      desc: '''
+            ??
+            '''
+    }
+  ]
+  alert_list: [
+//    { name: "fatal_fault",
+//      desc: '''
+//      This fatal alert is triggered when a fatal TL-UL bus integrity fault is detected.
+//      '''
+//    }
+  ],
+  features: [],
+  countermeasures: [
+//    { name: "BUS.INTEGRITY",
+//      desc: "End-to-end bus integrity scheme."
+//    }
+  ]
+  regwidth: "32",
+//  registers: []
+}
