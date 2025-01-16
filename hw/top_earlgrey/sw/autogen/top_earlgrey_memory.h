@@ -947,6 +947,23 @@
  * `TOP_EARLGREY_RV_CORE_IBEX_CFG_BASE_ADDR + TOP_EARLGREY_RV_CORE_IBEX_CFG_SIZE_BYTES`.
  */
 #define TOP_EARLGREY_RV_CORE_IBEX_CFG_SIZE_BYTES 0x100
+/**
+ * Peripheral base address for cfg device on iopmp in top earlgrey.
+ *
+ * This should be used with #mmio_region_from_addr to access the memory-mapped
+ * registers associated with the peripheral (usually via a DIF).
+ */
+#define TOP_EARLGREY_IOPMP_CFG_BASE_ADDR 0x42000000
+
+/**
+ * Peripheral size for cfg device on iopmp in top earlgrey.
+ *
+ * This is the size (in bytes) of the peripheral's reserved memory area. All
+ * memory-mapped registers associated with this peripheral should have an
+ * address between #TOP_EARLGREY_IOPMP_CFG_BASE_ADDR and
+ * `TOP_EARLGREY_IOPMP_CFG_BASE_ADDR + TOP_EARLGREY_IOPMP_CFG_SIZE_BYTES`.
+ */
+#define TOP_EARLGREY_IOPMP_CFG_SIZE_BYTES 0x10
 
 /**
  * MMIO Region

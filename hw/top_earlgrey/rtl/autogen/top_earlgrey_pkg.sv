@@ -532,6 +532,16 @@ package top_earlgrey_pkg;
   parameter int unsigned TOP_EARLGREY_RV_CORE_IBEX_CFG_SIZE_BYTES = 32'h100;
 
   /**
+   * Peripheral base address for cfg device on iopmp in top earlgrey.
+   */
+  parameter int unsigned TOP_EARLGREY_IOPMP_CFG_BASE_ADDR = 32'h42000000;
+
+  /**
+   * Peripheral size in bytes for cfg device on iopmp in top earlgrey.
+   */
+  parameter int unsigned TOP_EARLGREY_IOPMP_CFG_SIZE_BYTES = 32'h10;
+
+  /**
    * Memory base address for ram_ret_aon in top earlgrey.
    */
   parameter int unsigned TOP_EARLGREY_RAM_RET_AON_BASE_ADDR = 32'h40600000;
@@ -965,6 +975,7 @@ package top_earlgrey_pkg;
     PeripheralI2c0,
     PeripheralI2c1,
     PeripheralI2c2,
+    PeripheralIopmp,
     PeripheralKeymgr,
     PeripheralKmac,
     PeripheralLcCtrl,

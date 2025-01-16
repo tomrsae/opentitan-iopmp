@@ -45,9 +45,10 @@
       reset:     "rst_main_ni",
       req_fifo_pass: false,
       rsp_fifo_pass: false,
-    },,
+    },
     { name:      "iopmp.prim",
       type:      "host",
+      addr_space: "hart",
       clock:     "clk_main_i",
       reset:     "rst_main_ni",
       pipeline:  false
@@ -248,8 +249,9 @@
       "rv_plic", "otbn", "keymgr", "kmac", "sram_ctrl_main.regs",
       "rv_core_ibex.cfg",
     ],
+    // Must contain entries
     iopmp.prim: [
-
+      "aes" // TEMP
     ],
   },
 }

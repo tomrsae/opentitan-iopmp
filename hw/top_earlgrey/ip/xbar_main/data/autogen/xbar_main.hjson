@@ -30,7 +30,19 @@
       act:    "rsp"
       package: "tlul_pkg"
     }
+    { struct: "tl"
+      type:   "req_rsp"
+      name:   "tl_iopmp__prim"
+      act:    "rsp"
+      package: "tlul_pkg"
+    }
     // device
+    { struct: "tl"
+      type:   "req_rsp"
+      name:   "tl_iopmp__cfg"
+      act:    "req"
+      package: "tlul_pkg"
+    }
     { struct: "tl"
       type:   "req_rsp"
       name:   "tl_rv_dm__regs"

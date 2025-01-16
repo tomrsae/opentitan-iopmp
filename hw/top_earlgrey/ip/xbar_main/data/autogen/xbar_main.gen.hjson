@@ -93,6 +93,7 @@
       kmac
       sram_ctrl_main.regs
       rv_core_ibex.cfg
+      iopmp.cfg
     ]
     rv_dm.sba:
     [
@@ -120,6 +121,10 @@
       kmac
       sram_ctrl_main.regs
       rv_core_ibex.cfg
+    ]
+    iopmp.prim:
+    [
+      aes
     ]
   }
   nodes:
@@ -161,6 +166,41 @@
       xbar: false
       stub: false
       inst_type: ""
+      pipeline: true
+    }
+    {
+      name: iopmp.prim
+      type: host
+      addr_space: hart
+      clock: clk_main_i
+      reset: rst_main_ni
+      pipeline: false
+      xbar: false
+      stub: false
+      inst_type: ""
+      req_fifo_pass: true
+      rsp_fifo_pass: true
+    }
+    {
+      name: iopmp.cfg
+      type: device
+      clock: clk_main_i
+      reset: rst_main_ni
+      req_fifo_pass: false
+      rsp_fifo_pass: false
+      inst_type: iopmp
+      addr_range:
+      [
+        {
+          base_addrs:
+          {
+            hart: 0x42000000
+          }
+          size_byte: 0x10
+        }
+      ]
+      xbar: false
+      stub: false
       pipeline: true
     }
     {

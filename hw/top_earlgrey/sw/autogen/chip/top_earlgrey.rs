@@ -749,6 +749,20 @@ pub const RV_CORE_IBEX_CFG_BASE_ADDR: usize = 0x411F0000;
 /// `RV_CORE_IBEX_CFG_BASE_ADDR + RV_CORE_IBEX_CFG_SIZE_BYTES`.
 pub const RV_CORE_IBEX_CFG_SIZE_BYTES: usize = 0x100;
 
+/// Peripheral base address for cfg device on iopmp in top earlgrey.
+///
+/// This should be used with #mmio_region_from_addr to access the memory-mapped
+/// registers associated with the peripheral (usually via a DIF).
+pub const IOPMP_CFG_BASE_ADDR: usize = 0x42000000;
+
+/// Peripheral size for cfg device on iopmp in top earlgrey.
+///
+/// This is the size (in bytes) of the peripheral's reserved memory area. All
+/// memory-mapped registers associated with this peripheral should have an
+/// address between #IOPMP_CFG_BASE_ADDR and
+/// `IOPMP_CFG_BASE_ADDR + IOPMP_CFG_SIZE_BYTES`.
+pub const IOPMP_CFG_SIZE_BYTES: usize = 0x10;
+
 /// Memory base address for ram_ret_aon in top earlgrey.
 pub const RAM_RET_AON_BASE_ADDR: usize = 0x40600000;
 
@@ -842,6 +856,8 @@ pub enum PlicPeripheral {
     Edn0 = 29,
     /// edn1
     Edn1 = 30,
+    /// iopmp
+    Iopmp = 31,
 }
 
 impl TryFrom<u32> for PlicPeripheral {
@@ -879,6 +895,7 @@ impl TryFrom<u32> for PlicPeripheral {
             28 => Ok(Self::EntropySrc),
             29 => Ok(Self::Edn0),
             30 => Ok(Self::Edn1),
+            31 => Ok(Self::Iopmp),
             _ => Err(val),
         }
     }
@@ -1263,6 +1280,8 @@ pub enum PlicIrqId {
     Edn1EdnCmdReqDone = 184,
     /// edn1_edn_fatal_err
     Edn1EdnFatalErr = 185,
+    /// iopmp_access_violation
+    IopmpAccessViolation = 186,
 }
 
 impl TryFrom<u32> for PlicIrqId {
@@ -1455,6 +1474,7 @@ impl TryFrom<u32> for PlicIrqId {
             183 => Ok(Self::Edn0EdnFatalErr),
             184 => Ok(Self::Edn1EdnCmdReqDone),
             185 => Ok(Self::Edn1EdnFatalErr),
+            186 => Ok(Self::IopmpAccessViolation),
             _ => Err(val),
         }
     }
@@ -1779,7 +1799,7 @@ impl TryFrom<u32> for AlertId {
 ///
 /// This array is a mapping from `PlicIrqId` to
 /// `PlicPeripheral`.
-pub const PLIC_INTERRUPT_FOR_PERIPHERAL: [PlicPeripheral; 186] = [
+pub const PLIC_INTERRUPT_FOR_PERIPHERAL: [PlicPeripheral; 187] = [
     // None -> PlicPeripheral::Unknown
     PlicPeripheral::Unknown,
     // Uart0TxWatermark -> PlicPeripheral::Uart0
@@ -2152,6 +2172,8 @@ pub const PLIC_INTERRUPT_FOR_PERIPHERAL: [PlicPeripheral; 186] = [
     PlicPeripheral::Edn1,
     // Edn1EdnFatalErr -> PlicPeripheral::Edn1
     PlicPeripheral::Edn1,
+    // IopmpAccessViolation -> PlicPeripheral::Iopmp
+    PlicPeripheral::Iopmp,
 ];
 
 /// Alert Handler Alert Source to Peripheral Map

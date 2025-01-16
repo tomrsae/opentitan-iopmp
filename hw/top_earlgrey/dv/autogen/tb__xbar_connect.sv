@@ -40,7 +40,9 @@ clk_rst_if clk_rst_if_io_div4(.clk(clk_io_div4), .rst_n(rst_n));
 tl_if rv_core_ibex__corei_tl_if(clk_main, rst_n);
 tl_if rv_core_ibex__cored_tl_if(clk_main, rst_n);
 tl_if rv_dm__sba_tl_if(clk_main, rst_n);
+tl_if iopmp__prim_tl_if(clk_main, rst_n);
 
+tl_if iopmp__cfg_tl_if(clk_main, rst_n);
 tl_if rv_dm__regs_tl_if(clk_main, rst_n);
 tl_if rv_dm__mem_tl_if(clk_main, rst_n);
 tl_if rom_ctrl__rom_tl_if(clk_main, rst_n);
@@ -123,6 +125,8 @@ initial begin
     `DRIVE_CHIP_TL_HOST_IF(rv_core_ibex__corei, rv_core_ibex, corei_tl_h)
     `DRIVE_CHIP_TL_HOST_IF(rv_core_ibex__cored, rv_core_ibex, cored_tl_h)
     `DRIVE_CHIP_TL_HOST_IF(rv_dm__sba, rv_dm, sba_tl_h)
+    `DRIVE_CHIP_TL_HOST_IF(iopmp__prim, iopmp, prim_tl_h)
+    `DRIVE_CHIP_TL_DEVICE_IF(iopmp__cfg, iopmp, cfg_tl_d)
     `DRIVE_CHIP_TL_DEVICE_IF(rv_dm__regs, rv_dm, regs_tl_d)
     `DRIVE_CHIP_TL_DEVICE_IF(rv_dm__mem, rv_dm, mem_tl_d)
     `DRIVE_CHIP_TL_DEVICE_IF(rom_ctrl__rom, rom_ctrl, rom_tl)

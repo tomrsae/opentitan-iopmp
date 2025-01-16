@@ -580,6 +580,7 @@
             sram_ctrl_main.regs
             rom_ctrl.regs
             rv_core_ibex
+            iopmp
           ]
         }
       ]
@@ -8858,6 +8859,117 @@
       }
       generate_dif: true
     }
+    {
+      name: iopmp
+      type: iopmp
+      clock_srcs:
+      {
+        clk_i: io_div4
+      }
+      clock_group: peri
+      reset_connections:
+      {
+        rst_ni:
+        {
+          name: lc_io_div4
+          domain: "0"
+        }
+      }
+      clock_connections:
+      {
+        clk_i: clkmgr_aon_clocks.clk_io_div4_peri
+      }
+      domain:
+      [
+        "0"
+      ]
+      param_decl: {}
+      memory: {}
+      param_list:
+      [
+        {
+          name: IOPMPRegions
+          desc: ??
+          type: int
+          default: "6"
+          local: "false"
+          expose: "true"
+          name_top: IopmpIOPMPRegions
+        }
+        {
+          name: IOPMPNumChan
+          desc: ??
+          type: int
+          default: "3"
+          local: "false"
+          expose: "true"
+          name_top: IopmpIOPMPNumChan
+        }
+        {
+          name: IOPMPMemoryDomains
+          desc: ??
+          type: int
+          default: "3"
+          local: "false"
+          expose: "true"
+          name_top: IopmpIOPMPMemoryDomains
+        }
+        {
+          name: NUM_MASTERS
+          desc: ??
+          type: int
+          default: "3"
+          local: "false"
+          expose: "true"
+          name_top: IopmpNUM_MASTERS
+        }
+        {
+          name: IOPMPGranularity
+          desc: ??
+          type: int
+          default: "1"
+          local: "false"
+          expose: "true"
+          name_top: IopmpIOPMPGranularity
+        }
+      ]
+      inter_signal_list:
+      [
+        {
+          name: prim_tl_h
+          struct: tl
+          package: tlul_pkg
+          type: req_rsp
+          act: req
+          width: 1
+          inst_name: iopmp
+          default: ""
+          top_signame: main_tl_iopmp__prim
+          index: -1
+        }
+        {
+          name: cfg_tl_d
+          struct: tl
+          package: tlul_pkg
+          type: req_rsp
+          act: rsp
+          width: 1
+          inst_name: iopmp
+          default: ""
+          end_idx: -1
+          top_signame: iopmp_cfg_tl_d
+          index: -1
+        }
+      ]
+      base_addrs:
+      {
+        cfg:
+        {
+          hart: 0x42000000
+        }
+      }
+      generate_dif: true
+    }
   ]
   memory: []
   port:
@@ -9362,6 +9474,14 @@
       [
         rv_dm.sba_tl_h
       ]
+      main.tl_iopmp__prim:
+      [
+        iopmp.prim_tl_h
+      ]
+      iopmp.cfg_tl_d:
+      [
+        main.tl_iopmp__cfg
+      ]
       rv_dm.regs_tl_d:
       [
         main.tl_rv_dm__regs
@@ -9723,6 +9843,7 @@
           kmac
           sram_ctrl_main.regs
           rv_core_ibex.cfg
+          iopmp.cfg
         ]
         rv_dm.sba:
         [
@@ -9750,6 +9871,10 @@
           kmac
           sram_ctrl_main.regs
           rv_core_ibex.cfg
+        ]
+        iopmp.prim:
+        [
+          aes
         ]
       }
       nodes:
@@ -9791,6 +9916,41 @@
           xbar: false
           stub: false
           inst_type: ""
+          pipeline: true
+        }
+        {
+          name: iopmp.prim
+          type: host
+          addr_space: hart
+          clock: clk_main_i
+          reset: rst_main_ni
+          pipeline: false
+          xbar: false
+          stub: false
+          inst_type: ""
+          req_fifo_pass: true
+          rsp_fifo_pass: true
+        }
+        {
+          name: iopmp.cfg
+          type: device
+          clock: clk_main_i
+          reset: rst_main_ni
+          req_fifo_pass: false
+          rsp_fifo_pass: false
+          inst_type: iopmp
+          addr_range:
+          [
+            {
+              base_addrs:
+              {
+                hart: 0x42000000
+              }
+              size_byte: 0x10
+            }
+          ]
+          xbar: false
+          stub: false
           pipeline: true
         }
         {
@@ -10373,6 +10533,31 @@
           default: ""
           end_idx: -1
           top_signame: main_tl_rv_dm__sba
+          index: -1
+        }
+        {
+          name: tl_iopmp__prim
+          struct: tl
+          package: tlul_pkg
+          type: req_rsp
+          act: rsp
+          width: 1
+          inst_name: main
+          default: ""
+          end_idx: -1
+          top_signame: main_tl_iopmp__prim
+          index: -1
+        }
+        {
+          name: tl_iopmp__cfg
+          struct: tl
+          package: tlul_pkg
+          type: req_rsp
+          act: req
+          width: 1
+          inst_name: main
+          default: ""
+          top_signame: iopmp_cfg_tl_d
           index: -1
         }
         {
@@ -14385,6 +14570,7 @@
     entropy_src
     edn0
     edn1
+    iopmp
   ]
   interrupt:
   [
@@ -15617,6 +15803,14 @@
       width: 1
       type: interrupt
       module_name: edn1
+      intr_type: IntrType.Event
+      default_val: false
+    }
+    {
+      name: iopmp_access_violation
+      width: 1
+      type: interrupt
+      module_name: iopmp
       intr_type: IntrType.Event
       default_val: false
     }
@@ -21472,6 +21666,31 @@
         index: -1
       }
       {
+        name: prim_tl_h
+        struct: tl
+        package: tlul_pkg
+        type: req_rsp
+        act: req
+        width: 1
+        inst_name: iopmp
+        default: ""
+        top_signame: main_tl_iopmp__prim
+        index: -1
+      }
+      {
+        name: cfg_tl_d
+        struct: tl
+        package: tlul_pkg
+        type: req_rsp
+        act: rsp
+        width: 1
+        inst_name: iopmp
+        default: ""
+        end_idx: -1
+        top_signame: iopmp_cfg_tl_d
+        index: -1
+      }
+      {
         name: tl_rv_core_ibex__corei
         struct: tl
         package: tlul_pkg
@@ -21508,6 +21727,31 @@
         default: ""
         end_idx: -1
         top_signame: main_tl_rv_dm__sba
+        index: -1
+      }
+      {
+        name: tl_iopmp__prim
+        struct: tl
+        package: tlul_pkg
+        type: req_rsp
+        act: rsp
+        width: 1
+        inst_name: main
+        default: ""
+        end_idx: -1
+        top_signame: main_tl_iopmp__prim
+        index: -1
+      }
+      {
+        name: tl_iopmp__cfg
+        struct: tl
+        package: tlul_pkg
+        type: req_rsp
+        act: req
+        width: 1
+        inst_name: main
+        default: ""
+        top_signame: iopmp_cfg_tl_d
         index: -1
       }
       {
@@ -24046,6 +24290,50 @@
         package: tlul_pkg
         struct: tl_d2h
         signame: main_tl_rv_dm__sba_rsp
+        width: 1
+        type: req_rsp
+        end_idx: -1
+        act: rsp
+        suffix: rsp
+        default: ""
+      }
+      {
+        package: tlul_pkg
+        struct: tl_h2d
+        signame: main_tl_iopmp__prim_req
+        width: 1
+        type: req_rsp
+        end_idx: -1
+        act: rsp
+        suffix: req
+        default: tlul_pkg::TL_H2D_DEFAULT
+      }
+      {
+        package: tlul_pkg
+        struct: tl_d2h
+        signame: main_tl_iopmp__prim_rsp
+        width: 1
+        type: req_rsp
+        end_idx: -1
+        act: rsp
+        suffix: rsp
+        default: ""
+      }
+      {
+        package: tlul_pkg
+        struct: tl_h2d
+        signame: iopmp_cfg_tl_d_req
+        width: 1
+        type: req_rsp
+        end_idx: -1
+        act: rsp
+        suffix: req
+        default: tlul_pkg::TL_H2D_DEFAULT
+      }
+      {
+        package: tlul_pkg
+        struct: tl_d2h
+        signame: iopmp_cfg_tl_d_rsp
         width: 1
         type: req_rsp
         end_idx: -1

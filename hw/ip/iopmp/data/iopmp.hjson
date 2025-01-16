@@ -10,9 +10,9 @@
   ]
   bus_interfaces: [
     // primary
-    { protocol: "tlul", direction: "host" }
+    { protocol: "tlul", direction: "host", name: "prim" },
     // config
-    { protocol: "tlul", direction: "device" }
+    { protocol: "tlul", direction: "device", name: "cfg" }
   ],
   // **
   // Peripherals?
@@ -79,5 +79,7 @@
 //    }
   ]
   regwidth: "32",
-  registers: []
+  registers: {
+    cfg: []
+  }
 }

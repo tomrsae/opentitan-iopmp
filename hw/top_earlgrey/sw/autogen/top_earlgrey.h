@@ -961,6 +961,24 @@ extern "C" {
  */
 #define TOP_EARLGREY_RV_CORE_IBEX_CFG_SIZE_BYTES 0x100u
 
+/**
+ * Peripheral base address for cfg device on iopmp in top earlgrey.
+ *
+ * This should be used with #mmio_region_from_addr to access the memory-mapped
+ * registers associated with the peripheral (usually via a DIF).
+ */
+#define TOP_EARLGREY_IOPMP_CFG_BASE_ADDR 0x42000000u
+
+/**
+ * Peripheral size for cfg device on iopmp in top earlgrey.
+ *
+ * This is the size (in bytes) of the peripheral's reserved memory area. All
+ * memory-mapped registers associated with this peripheral should have an
+ * address between #TOP_EARLGREY_IOPMP_CFG_BASE_ADDR and
+ * `TOP_EARLGREY_IOPMP_CFG_BASE_ADDR + TOP_EARLGREY_IOPMP_CFG_SIZE_BYTES`.
+ */
+#define TOP_EARLGREY_IOPMP_CFG_SIZE_BYTES 0x10u
+
 
 /**
  * Memory base address for ram_ret_aon in top earlgrey.
@@ -1041,7 +1059,8 @@ typedef enum top_earlgrey_plic_peripheral {
   kTopEarlgreyPlicPeripheralEntropySrc = 28, /**< entropy_src */
   kTopEarlgreyPlicPeripheralEdn0 = 29, /**< edn0 */
   kTopEarlgreyPlicPeripheralEdn1 = 30, /**< edn1 */
-  kTopEarlgreyPlicPeripheralLast = 30, /**< \internal Final PLIC peripheral */
+  kTopEarlgreyPlicPeripheralIopmp = 31, /**< iopmp */
+  kTopEarlgreyPlicPeripheralLast = 31, /**< \internal Final PLIC peripheral */
 } top_earlgrey_plic_peripheral_t;
 
 /**
@@ -1237,7 +1256,8 @@ typedef enum top_earlgrey_plic_irq_id {
   kTopEarlgreyPlicIrqIdEdn0EdnFatalErr = 183, /**< edn0_edn_fatal_err */
   kTopEarlgreyPlicIrqIdEdn1EdnCmdReqDone = 184, /**< edn1_edn_cmd_req_done */
   kTopEarlgreyPlicIrqIdEdn1EdnFatalErr = 185, /**< edn1_edn_fatal_err */
-  kTopEarlgreyPlicIrqIdLast = 185, /**< \internal The Last Valid Interrupt ID. */
+  kTopEarlgreyPlicIrqIdIopmpAccessViolation = 186, /**< iopmp_access_violation */
+  kTopEarlgreyPlicIrqIdLast = 186, /**< \internal The Last Valid Interrupt ID. */
 } top_earlgrey_plic_irq_id_t;
 
 /**
@@ -1247,7 +1267,7 @@ typedef enum top_earlgrey_plic_irq_id {
  * `top_earlgrey_plic_peripheral_t`.
  */
 extern const top_earlgrey_plic_peripheral_t
-    top_earlgrey_plic_interrupt_for_peripheral[186];
+    top_earlgrey_plic_interrupt_for_peripheral[187];
 
 /**
  * PLIC Interrupt Target.

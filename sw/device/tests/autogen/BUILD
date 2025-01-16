@@ -62,6 +62,7 @@ package(default_visibility = ["//visibility:public"])
             "//sw/device/lib/dif:gpio",
             "//sw/device/lib/dif:hmac",
             "//sw/device/lib/dif:i2c",
+            "//sw/device/lib/dif:iopmp",
             "//sw/device/lib/dif:keymgr",
             "//sw/device/lib/dif:kmac",
             "//sw/device/lib/dif:otbn",
@@ -82,7 +83,7 @@ package(default_visibility = ["//visibility:public"])
             "//sw/device/lib/testing/test_framework:ottf_main",
         ],
     )
-    for min in range(0, 23, 10)
+    for min in range(0, 24, 10)
 ]
 
 test_suite(

@@ -24,8 +24,20 @@ module xbar_main_bind;
     .h2d    (tl_rv_dm__sba_i),
     .d2h    (tl_rv_dm__sba_o)
   );
+  bind xbar_main tlul_assert #(.EndpointType("Device")) tlul_assert_host_iopmp__prim (
+    .clk_i  (clk_main_i),
+    .rst_ni (rst_main_ni),
+    .h2d    (tl_iopmp__prim_i),
+    .d2h    (tl_iopmp__prim_o)
+  );
 
   // Device interfaces
+  bind xbar_main tlul_assert #(.EndpointType("Host")) tlul_assert_device_iopmp__cfg (
+    .clk_i  (clk_main_i),
+    .rst_ni (rst_main_ni),
+    .h2d    (tl_iopmp__cfg_o),
+    .d2h    (tl_iopmp__cfg_i)
+  );
   bind xbar_main tlul_assert #(.EndpointType("Host")) tlul_assert_device_rv_dm__regs (
     .clk_i  (clk_main_i),
     .rst_ni (rst_main_ni),

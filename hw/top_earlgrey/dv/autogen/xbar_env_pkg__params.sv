@@ -7,6 +7,9 @@
 
 // List of Xbar device memory map
 tl_device_t xbar_devices[$] = '{
+    '{"iopmp__cfg", '{
+        '{32'h42000000, 32'h4200000f}
+    }},
     '{"rv_dm__regs", '{
         '{32'h41200000, 32'h4120000f}
     }},
@@ -216,7 +219,8 @@ tl_host_t xbar_hosts[$] = '{
         "keymgr",
         "kmac",
         "sram_ctrl_main__regs",
-        "rv_core_ibex__cfg"}}
+        "rv_core_ibex__cfg",
+        "iopmp__cfg"}}
     ,
     '{"rv_dm__sba", 2, '{
         "rom_ctrl__rom",
@@ -269,4 +273,7 @@ tl_host_t xbar_hosts[$] = '{
         "kmac",
         "sram_ctrl_main__regs",
         "rv_core_ibex__cfg"}}
+    ,
+    '{"iopmp__prim", 3, '{
+        "aes"}}
 };

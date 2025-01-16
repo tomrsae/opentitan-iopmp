@@ -134,7 +134,13 @@ module top_earlgrey #(
       tl_main_pkg::ADDR_SPACE_RV_DM__MEM + dm::HaltAddress[31:0],
   parameter int unsigned RvCoreIbexDmExceptionAddr =
       tl_main_pkg::ADDR_SPACE_RV_DM__MEM + dm::ExceptionAddress[31:0],
-  parameter bit RvCoreIbexPipeLine = 0
+  parameter bit RvCoreIbexPipeLine = 0,
+  // parameters for iopmp
+  parameter int IopmpIOPMPRegions = 6,
+  parameter int IopmpIOPMPNumChan = 3,
+  parameter int IopmpIOPMPMemoryDomains = 3,
+  parameter int IopmpNUM_MASTERS = 3,
+  parameter int IopmpIOPMPGranularity = 1
 ) (
   // Multiplexed I/O
   input        [46:0] mio_in_i,
@@ -384,9 +390,10 @@ module top_earlgrey #(
   // sram_ctrl_main
   // rom_ctrl
   // rv_core_ibex
+  // iopmp
 
 
-  logic [185:0]  intr_vector;
+  logic [186:0]  intr_vector;
   // Interrupt source list
   logic intr_uart0_tx_watermark;
   logic intr_uart0_rx_watermark;
@@ -542,6 +549,7 @@ module top_earlgrey #(
   logic intr_edn0_edn_fatal_err;
   logic intr_edn1_edn_cmd_req_done;
   logic intr_edn1_edn_fatal_err;
+  logic intr_iopmp_access_violation;
 
   // Alert list
   prim_alert_pkg::alert_tx_t [alert_pkg::NAlerts-1:0]  alert_tx;
@@ -651,6 +659,10 @@ module top_earlgrey #(
   tlul_pkg::tl_d2h_t       main_tl_rv_core_ibex__cored_rsp;
   tlul_pkg::tl_h2d_t       main_tl_rv_dm__sba_req;
   tlul_pkg::tl_d2h_t       main_tl_rv_dm__sba_rsp;
+  tlul_pkg::tl_h2d_t       main_tl_iopmp__prim_req;
+  tlul_pkg::tl_d2h_t       main_tl_iopmp__prim_rsp;
+  tlul_pkg::tl_h2d_t       iopmp_cfg_tl_d_req;
+  tlul_pkg::tl_d2h_t       iopmp_cfg_tl_d_rsp;
   tlul_pkg::tl_h2d_t       rv_dm_regs_tl_d_req;
   tlul_pkg::tl_d2h_t       rv_dm_regs_tl_d_rsp;
   tlul_pkg::tl_h2d_t       rv_dm_mem_tl_d_req;
@@ -2705,8 +2717,30 @@ module top_earlgrey #(
       .rst_esc_ni (rstmgr_aon_resets.rst_lc_io_div4_n[rstmgr_pkg::Domain0Sel]),
       .rst_otp_ni (rstmgr_aon_resets.rst_lc_io_div4_n[rstmgr_pkg::Domain0Sel])
   );
+  iopmp #(
+    .IOPMPRegions(IopmpIOPMPRegions),
+    .IOPMPNumChan(IopmpIOPMPNumChan),
+    .IOPMPMemoryDomains(IopmpIOPMPMemoryDomains),
+    .NUM_MASTERS(IopmpNUM_MASTERS),
+    .IOPMPGranularity(IopmpIOPMPGranularity)
+  ) u_iopmp (
+
+      // Interrupt
+      .intr_access_violation_o (intr_iopmp_access_violation),
+
+      // Inter-module signals
+      .prim_tl_h_o(main_tl_iopmp__prim_req),
+      .prim_tl_h_i(main_tl_iopmp__prim_rsp),
+      .cfg_tl_d_i(iopmp_cfg_tl_d_req),
+      .cfg_tl_d_o(iopmp_cfg_tl_d_rsp),
+
+      // Clock and reset connections
+      .clk_i (clkmgr_aon_clocks.clk_io_div4_peri),
+      .rst_ni (rstmgr_aon_resets.rst_lc_io_div4_n[rstmgr_pkg::Domain0Sel])
+  );
   // interrupt assignments
   assign intr_vector = {
+      intr_iopmp_access_violation, // IDs [186 +: 1]
       intr_edn1_edn_fatal_err, // IDs [185 +: 1]
       intr_edn1_edn_cmd_req_done, // IDs [184 +: 1]
       intr_edn0_edn_fatal_err, // IDs [183 +: 1]
@@ -2888,6 +2922,14 @@ module top_earlgrey #(
     // port: tl_rv_dm__sba
     .tl_rv_dm__sba_i(main_tl_rv_dm__sba_req),
     .tl_rv_dm__sba_o(main_tl_rv_dm__sba_rsp),
+
+    // port: tl_iopmp__prim
+    .tl_iopmp__prim_i(main_tl_iopmp__prim_req),
+    .tl_iopmp__prim_o(main_tl_iopmp__prim_rsp),
+
+    // port: tl_iopmp__cfg
+    .tl_iopmp__cfg_o(iopmp_cfg_tl_d_req),
+    .tl_iopmp__cfg_i(iopmp_cfg_tl_d_rsp),
 
     // port: tl_rv_dm__regs
     .tl_rv_dm__regs_o(rv_dm_regs_tl_d_req),
