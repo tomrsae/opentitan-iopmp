@@ -1,0 +1,78 @@
+CAPI=2:
+name: "lowrisc:ip:iopmp:1.0"
+description: "IOPMP unit"
+filesets:
+  files_rtl:
+    depend:
+      - lowrisc:prim:all
+      - lowrisc:prim:lc_sync
+      - lowrisc:prim:lfsr
+      - lowrisc:prim:sparse_fsm
+      - lowrisc:prim:trivium
+      - lowrisc:prim:util
+      - lowrisc:ip:tlul
+      - lowrisc:ip:lc_ctrl_pkg
+      - lowrisc:ip:edn_pkg
+      - lowrisc:ip:keymgr_pkg
+    files:
+      - rtl/config_pkg.sv
+      - rtl/iopmp_array_top.sv
+      - rtl/iopmp_cfg_i.sv
+      - rtl/iopmp_control_port.sv
+      - rtl/iopmp_error_recorder.sv
+      - rtl/iopmp_pkg.sv
+      - rtl/iopmp_reg_handler.sv
+      - rtl/iopmp_req_handler_tlul.sv
+      - rtl/iopmp.sv
+      - rtl/my_macros.svh
+      - rtl/slv_resp_generator.sv
+      - rtl/tlul_success_resp.sv
+      - rtl/top_pkg.sv
+    file_type: systemVerilogSource
+
+  files_verilator_waiver:
+    depend:
+      # common waivers
+      - lowrisc:lint:common
+      - lowrisc:lint:comportable
+
+  files_ascentlint_waiver:
+    depend:
+      # common waivers
+      - lowrisc:lint:common
+      - lowrisc:lint:comportable
+
+  files_veriblelint_waiver:
+    depend:
+      # common waivers
+      - lowrisc:lint:common
+      - lowrisc:lint:comportable
+
+targets:
+  default: &default_target
+    filesets:
+      - tool_verilator   ? (files_verilator_waiver)
+      - tool_ascentlint  ? (files_ascentlint_waiver)
+      - tool_veriblelint ? (files_veriblelint_waiver)
+      - files_rtl
+    toplevel: iopmp
+
+  lint:
+    <<: *default_target
+    default_tool: verilator
+    parameters:
+      - SYNTHESIS=true
+    tools:
+      verilator:
+        mode: lint-only
+        verilator_options:
+          - "-Wall"
+
+  syn:
+    <<: *default_target
+    # TODO: set default to DC once
+    # this option is available
+    # olofk/edalize#89
+    default_tool: icarus
+    parameters:
+      - SYNTHESIS=true

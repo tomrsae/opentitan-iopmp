@@ -987,8 +987,7 @@
       reset_connections: {rst_ni: "lc_io_div4"},
       base_addr: {
         hart: "0x42000000",
-      },
-      //attr: "normal"
+      }
     }
   ],
 

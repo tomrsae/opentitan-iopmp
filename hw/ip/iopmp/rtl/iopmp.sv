@@ -33,14 +33,14 @@ module iopmp #(
     input  logic                clk_i,
     input  logic                rst_ni,
     
-    input  tl_h2d_t             tl_i_req[IOPMPNumChan],
-    output tl_d2h_t             tl_o_req[IOPMPNumChan], //IOPMP
+    input  tl_h2d_t             prim_tl_h_i[IOPMPNumChan],
+    output tl_d2h_t             prim_tl_h_o[IOPMPNumChan], //IOPMP
     
     //input  tl_d2h_t             slv_rsp_i[IOPMPNumChan],
     //output tl_h2d_t             slv_req_o[IOPMPNumChan],
     
-    input   tl_h2d_t            reg_prog_i,
-    output  tl_d2h_t            reg_prog_o,
+    input   tl_h2d_t            cfg_tl_d_i,
+    output  tl_d2h_t            cfg_tl_d_o,
     
     output  logic               intr_access_violation_o
     
@@ -100,8 +100,8 @@ iopmp_control_port #(
 ) iopmp_control_port_0(
     .clk(clk_i),
     .reset(rst_ni),
-    .mst_req_i(reg_prog_i),
-    .slv_rsp_o(reg_prog_o),
+    .mst_req_i(cfg_tl_d_i),
+    .slv_rsp_o(cfg_tl_d_o),
     .error_report_i(error_reg_o),
     .error_report_o(error_reg_i),
     .entry_conf_table(entry_conf),
@@ -118,8 +118,8 @@ iopmp_req_handler_tlul #(
     .clk(clk_i),
     .rst(rst_ni),
     //.iopmp_req_err_o(iopmp_req_err_o),
-    .mst_req_i(tl_i_req),
-    .mst_rsp_o(tl_o_req),
+    .mst_req_i(prim_tl_h_i),
+    .mst_rsp_o(prim_tl_h_o),
     .slv_rsp_i(slv_rsp_i),
     .slv_req_o(slv_req_o),
     .iopmp_permission_denied(iopmp_req_err_o),
