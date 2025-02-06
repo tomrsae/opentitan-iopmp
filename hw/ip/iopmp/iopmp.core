@@ -16,18 +16,17 @@ filesets:
       - lowrisc:ip:keymgr_pkg
     files:
       - rtl/config_pkg.sv
+      - rtl/iopmp_pkg.sv
+      - rtl/top_pkg.sv
+      - rtl/tlul_success_resp.sv
       - rtl/iopmp_array_top.sv
       - rtl/iopmp_cfg_i.sv
       - rtl/iopmp_control_port.sv
       - rtl/iopmp_error_recorder.sv
-      - rtl/iopmp_pkg.sv
       - rtl/iopmp_reg_handler.sv
       - rtl/iopmp_req_handler_tlul.sv
       - rtl/iopmp.sv
-      - rtl/my_macros.svh
       - rtl/slv_resp_generator.sv
-      - rtl/tlul_success_resp.sv
-      - rtl/top_pkg.sv
     file_type: systemVerilogSource
 
   files_verilator_waiver:

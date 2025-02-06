@@ -265,8 +265,8 @@ package iopmp_pkg;
         logic r;                    // The read permission to protected memory region
     } entry_cfg;
     
-    typedef struct packed {
-        logic [31:0] addr;
-    } entry_addr;
+    // typedef struct packed {
+    //     logic [31:0] addr;
+    // } entry_addr;
 
 endpackage

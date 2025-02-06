@@ -22,6 +22,7 @@ filesets:
       - lowrisc:ip:pattgen
       - lowrisc:ip:pwm
       - lowrisc:ip:aes
+      - lowrisc:ip:iopmp
       - lowrisc:ip:entropy_src
       - lowrisc:ip:csrng
       - lowrisc:ip:edn

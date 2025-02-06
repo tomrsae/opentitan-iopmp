@@ -35,6 +35,7 @@ IPS ?= aes           \
        pwm           \
        rom_ctrl      \
        rv_core_ibex  \
+       iopmp         \
        rv_dm         \
        rv_timer      \
        sensor_ctrl   \

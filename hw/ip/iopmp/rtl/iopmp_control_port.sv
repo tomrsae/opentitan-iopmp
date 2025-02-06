@@ -18,7 +18,11 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-`include "my_macros.svh"
+//`include "my_macros.svh"
+`define HW_ZERO 1'b0
+`define HW_ONE  1'b1
+`define FULL_MODEL_M FULL_MODEL
+
 import top_pkg::*;
 import tlul_pkg::*;
 import config_pkg::*;
@@ -157,7 +161,7 @@ iopmp_pkg::srcmd_en                 SRCMD_EN [NUM_MASTERS];
 iopmp_pkg::srcmd_enh                SRCMD_ENH[NUM_MASTERS];
 
 // ENTRY Table
-iopmp_pkg::entry_addr               ENTRY_ADDR[IOPMPRegions];
+logic[31:0]              ENTRY_ADDR[IOPMPRegions];
 iopmp_pkg::entry_cfg                ENTRY_CFG[IOPMPRegions];
 
 
