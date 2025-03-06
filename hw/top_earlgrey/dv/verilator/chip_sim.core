@@ -122,11 +122,3 @@ targets:
           # (or make it more fine-grained at least)
           - '-Wno-fatal'
 
-  lint:
-    <<: *default_target
-    default_tool: verilator
-    tools:
-      verilator:
-        mode: lint-only
-        verilator_options:
-          - "-Wall"

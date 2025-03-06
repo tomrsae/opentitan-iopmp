@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+//`timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -25,19 +25,19 @@ import iopmp_pkg::*;
 
 module iopmp #(
     parameter int unsigned IOPMPRegions          =   6,
-    parameter int unsigned IOPMPNumChan          =   3,
+    parameter int unsigned IOPMPNumChan          =   1,
     parameter int unsigned IOPMPMemoryDomains    =   3,
-    parameter int unsigned NUM_MASTERS           =   3,
+    parameter int unsigned NUM_MASTERS           =   1,
     parameter int unsigned IOPMPGranularity      =   1
 )(
     input  logic                clk_i,
     input  logic                rst_ni,
     
-    input  tl_h2d_t             prim_tl_h_i[IOPMPNumChan],
-    output tl_d2h_t             prim_tl_h_o[IOPMPNumChan], //IOPMP
+    input  tl_h2d_t             tl_i_req[IOPMPNumChan],
+    output tl_d2h_t             tl_o_req[IOPMPNumChan], //IOPMP
     
-    //input  tl_d2h_t             slv_rsp_i[IOPMPNumChan],
-    //output tl_h2d_t             slv_req_o[IOPMPNumChan],
+    input  tl_d2h_t             prim_tl_h_i[IOPMPNumChan],
+    output tl_h2d_t             prim_tl_h_o[IOPMPNumChan],
     
     input   tl_h2d_t            cfg_tl_d_i,
     output  tl_d2h_t            cfg_tl_d_o,
@@ -67,8 +67,8 @@ iopmp_pkg::iopmp_req_e                iopmp_req_type_i[IOPMPNumChan];
 logic                                 iopmp_req_err_o[IOPMPNumChan];
 logic [8:0]                           entry_violated_index[IOPMPNumChan];
 
-tl_d2h_t                              slv_rsp_i[IOPMPNumChan]; // it should be an input, we assume it comes from a slave.
-tl_h2d_t                              slv_req_o[IOPMPNumChan]; // it should be an output
+//tl_d2h_t                              slv_rsp_i[IOPMPNumChan]; // it should be an input, we assume it comes from a slave.
+//tl_h2d_t                              slv_req_o[IOPMPNumChan]; // it should be an output
 
 tl_d2h_t                              err_tl[IOPMPNumChan];
 
@@ -118,28 +118,28 @@ iopmp_req_handler_tlul #(
     .clk(clk_i),
     .rst(rst_ni),
     //.iopmp_req_err_o(iopmp_req_err_o),
-    .mst_req_i(prim_tl_h_i),
-    .mst_rsp_o(prim_tl_h_o),
-    .slv_rsp_i(slv_rsp_i),
-    .slv_req_o(slv_req_o),
+    .mst_req_i(tl_i_req),
+    .mst_rsp_o(tl_o_req),
+    .slv_rsp_i(prim_tl_h_i),
+    .slv_req_o(prim_tl_h_o),
     .iopmp_permission_denied(iopmp_req_err_o),
     .entry_violated_index_i(entry_violated_index),
     .ERR_CFG(ERR_CFG),
-    .entry_conf_i(entry_conf),
+    .entry_conf(entry_conf),
     .iopmp_check_addr_o(iopmp_req_addr_i),
     .iopmp_check_access_o(iopmp_req_type_i),
     //.iopmp_check_en_o(),
     .rrid(rrid)
 );
 
-for(genvar j = 0; j < IOPMPNumChan; j++) begin
-slv_resp_generator slv_resp(
-        .clk(clk_i),
-        .rst(rst_ni),
-        .iopmp_error(iopmp_req_err_o[j]),
-        .req_i(slv_req_o[j]),
-        .rsp_o(slv_rsp_i[j]));       
-end
+// for(genvar j = 0; j < IOPMPNumChan; j++) begin
+// slv_resp_generator slv_resp(
+//         .clk(clk_i),
+//         .rst(rst_ni),
+//         .iopmp_error(iopmp_req_err_o[j]),
+//         .req_i(prim_tl_h_o[j]),
+//         .rsp_o(prim_tl_h_i[j]));       
+// end
  
 iopmp_array_top #(
     .IOPMPGranularity(IOPMPGranularity),

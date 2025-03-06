@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+//`timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -22,7 +22,16 @@ import config_pkg::*;
 
 package iopmp_pkg;
 
-   
+    typedef enum logic [1:0] {
+        IDLE              = 2'b00,
+        BLOCK             = 2'b01
+    } state_t;
+    
+    typedef enum logic [1:0] {
+        NO_OP              = 2'b00,
+        RESP               = 2'b01
+    } state_t_control;
+
    // iopmp structures
    
    // INFO Registers
@@ -265,8 +274,8 @@ package iopmp_pkg;
         logic r;                    // The read permission to protected memory region
     } entry_cfg;
     
-    // typedef struct packed {
-    //     logic [31:0] addr;
-    // } entry_addr;
+    typedef struct packed {
+        logic [31:0] addr;
+    } iopmp_entry_addr;
 
 endpackage

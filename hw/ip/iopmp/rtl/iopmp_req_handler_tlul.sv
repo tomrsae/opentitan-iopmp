@@ -94,7 +94,7 @@ module iopmp_req_handler_tlul #(
 
     genvar j;
     for(j=0; j < IOPMPNumChan; j++) begin 
-        state_t current_state, next_state;
+        iopmp_pkg::state_t current_state, next_state;
         always_ff @(posedge clk) begin
             if (rst) begin
                 current_state      <= IDLE;

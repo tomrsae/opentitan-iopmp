@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+//`timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -161,7 +161,7 @@ iopmp_pkg::srcmd_en                 SRCMD_EN [NUM_MASTERS];
 iopmp_pkg::srcmd_enh                SRCMD_ENH[NUM_MASTERS];
 
 // ENTRY Table
-logic[31:0]              ENTRY_ADDR[IOPMPRegions];
+iopmp_pkg::iopmp_entry_addr         ENTRY_ADDR[IOPMPRegions];
 iopmp_pkg::entry_cfg                ENTRY_CFG[IOPMPRegions];
 
 
@@ -816,7 +816,7 @@ logic [AddrWidth -  1: 0] ENTRY_CFG_I_OFFSET;
 
 
 // State machine for controlling wr_enable
-state_t_control state, next_state;
+iopmp_pkg::state_t_control state, next_state;
 
 always_ff @(posedge clk) begin
     if (reset) begin

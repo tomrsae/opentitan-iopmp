@@ -8900,7 +8900,7 @@
           name: IOPMPNumChan
           desc: ??
           type: int
-          default: "3"
+          default: "1"
           local: "false"
           expose: "true"
           name_top: IopmpIOPMPNumChan
@@ -8918,7 +8918,7 @@
           name: NUM_MASTERS
           desc: ??
           type: int
-          default: "3"
+          default: "1"
           local: "false"
           expose: "true"
           name_top: IopmpNUM_MASTERS

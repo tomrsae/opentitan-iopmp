@@ -137,9 +137,9 @@ module top_earlgrey #(
   parameter bit RvCoreIbexPipeLine = 0,
   // parameters for iopmp
   parameter int IopmpIOPMPRegions = 6,
-  parameter int IopmpIOPMPNumChan = 3,
+  parameter int IopmpIOPMPNumChan = 1,
   parameter int IopmpIOPMPMemoryDomains = 3,
-  parameter int IopmpNUM_MASTERS = 3,
+  parameter int IopmpNUM_MASTERS = 1,
   parameter int IopmpIOPMPGranularity = 1
 ) (
   // Multiplexed I/O
@@ -659,8 +659,8 @@ module top_earlgrey #(
   tlul_pkg::tl_d2h_t       main_tl_rv_core_ibex__cored_rsp;
   tlul_pkg::tl_h2d_t       main_tl_rv_dm__sba_req;
   tlul_pkg::tl_d2h_t       main_tl_rv_dm__sba_rsp;
-  tlul_pkg::tl_h2d_t       main_tl_iopmp__prim_req;
-  tlul_pkg::tl_d2h_t       main_tl_iopmp__prim_rsp;
+  tlul_pkg::tl_h2d_t       main_tl_iopmp__prim_req[IopmpIOPMPNumChan];
+  tlul_pkg::tl_d2h_t       main_tl_iopmp__prim_rsp[IopmpIOPMPNumChan];
   tlul_pkg::tl_h2d_t       iopmp_cfg_tl_d_req;
   tlul_pkg::tl_d2h_t       iopmp_cfg_tl_d_rsp;
   tlul_pkg::tl_h2d_t       rv_dm_regs_tl_d_req;
@@ -2924,8 +2924,8 @@ module top_earlgrey #(
     .tl_rv_dm__sba_o(main_tl_rv_dm__sba_rsp),
 
     // port: tl_iopmp__prim
-    .tl_iopmp__prim_i(main_tl_iopmp__prim_req),
-    .tl_iopmp__prim_o(main_tl_iopmp__prim_rsp),
+    .tl_iopmp__prim_i(main_tl_iopmp__prim_req[0]),
+    .tl_iopmp__prim_o(main_tl_iopmp__prim_rsp[0]),
 
     // port: tl_iopmp__cfg
     .tl_iopmp__cfg_o(iopmp_cfg_tl_d_req),

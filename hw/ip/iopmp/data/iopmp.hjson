@@ -31,7 +31,7 @@
     },
     { name:    "IOPMPNumChan",
       type:    "int",
-      default: "3",
+      default: "1",
       desc:    "??"
       local:   "false",
       expose:  "true"
@@ -45,7 +45,7 @@
     },
     { name:    "NUM_MASTERS",
       type:    "int",
-      default: "3",
+      default: "1",
       desc:    "??"
       local:   "false",
       expose:  "true"
