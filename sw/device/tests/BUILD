@@ -58,6 +58,20 @@ opentitan_test(
 )
 
 opentitan_test(
+    name = "iopmp_test",
+    srcs = ["iopmp_test.c"],
+    exec_env = EARLGREY_TEST_ENVS,
+    deps = [
+        "//hw/top_earlgrey/sw/autogen:top_earlgrey",
+        "//sw/device/lib/arch:device",
+        "//sw/device/lib/base:mmio",
+        "//sw/device/lib/dif:iopmp",
+        "//sw/device/lib/runtime:hart",
+        "//sw/device/lib/testing/test_framework:ottf_main",
+    ],
+)
+
+opentitan_test(
     name = "aes_masking_off_test",
     srcs = ["aes_masking_off_test.c"],
     exec_env = EARLGREY_TEST_ENVS,

@@ -1255,6 +1255,26 @@ cc_library(
     ],
 )
 
+cc_library(
+    name = "iopmp",
+    srcs = [
+        "autogen/dif_iopmp_autogen.c",
+        "autogen/dif_iopmp_autogen.h",
+        "dif_iopmp.c",
+    ],
+    hdrs = ["dif_iopmp.h"],
+    deps = [
+        ":base",
+        "//hw/ip/iopmp/data:iopmp_c_regs",
+        "//sw/device/lib/base:bitfield",
+        "//sw/device/lib/base:macros",
+        "//sw/device/lib/base:math",
+        "//sw/device/lib/base:memory",
+        "//sw/device/lib/base:mmio",
+        "//sw/device/lib/base:multibits",
+    ],
+)
+
 cc_test(
     name = "uart_unittest",
     srcs = [
