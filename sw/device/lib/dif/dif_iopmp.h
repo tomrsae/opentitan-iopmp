@@ -16,6 +16,51 @@
 
 #include "sw/device/lib/dif/autogen/dif_iopmp_autogen.h"
 
+// INFO registers
+#define IOPMP_VERSION_REG_OFFSET 0x0000
+#define IOPMP_IMPLEMENTATION_REG_OFFSET 0x0004
+
+// SRCMD table registers
+#define IOPMP_SRCMD_EN_REG_OFFSET 0x1000
+#define IOPMP_SRCMD_ENH_REG_OFFSET 0x1004
+#define IOPMP_SRCMD_ENTRY_SIZE 32
+
+// MDCFG table registers
+#define IOPMP_MDCFG_REG_OFFSET 0x0800
+#define IOPMP_MDCFG_ENTRY_SIZE 4
+#define IOPMP_MDCFG_VAL_T_MASK 0xffffu
+#define IOPMP_MDCFG_VAL_T_OFFSET 0
+#define IOPMP_MDCFG_VAL_T_FIELD \
+  ((bitfield_field32_t) { .mask = IOPMP_MDCFG_VAL_T_MASK, .offset = IOPMP_MDCFG_VAL_T_OFFSET })
+
+// Entry array registers
+// uses "rel" offsets because base offsets are unknown at compile-time
+#define IOPMP_ENTRY_ADDRH_REL_REG_OFFSET 0x4
+#define IOPMP_ENTRY_CFG_REL_REG_OFFSET 0x8
+#define IOPMP_ENTRY_ENTRY_SIZE 16
+#define IOPMP_ENTRY_CFG_VAL_R_OFFSET 0
+#define IOPMP_ENTRY_CFG_VAL_R_FIELD ((bitfield_bit32_index_t) IOPMP_ENTRY_CFG_VAL_R_OFFSET)
+#define IOPMP_ENTRY_CFG_VAL_W_OFFSET 1
+#define IOPMP_ENTRY_CFG_VAL_W_FIELD ((bitfield_bit32_index_t) IOPMP_ENTRY_CFG_VAL_W_OFFSET)
+#define IOPMP_ENTRY_CFG_VAL_X_OFFSET 2
+#define IOPMP_ENTRY_CFG_VAL_X_FIELD ((bitfield_bit32_index_t) IOPMP_ENTRY_CFG_VAL_X_OFFSET)
+#define IOPMP_ENTRY_CFG_VAL_A_OFFSET 3
+#define IOPMP_ENTRY_CFG_VAL_A_MASK 0x3u
+#define IOPMP_ENTRY_CFG_VAL_A_FIELD \
+  ((bitfield_field32_t) { .mask = IOPMP_ENTRY_CFG_VAL_A_MASK, offset = IOPMP_ENTRY_CFG_VAL_A_OFFSET })
+#define IOPMP_ENTRY_CFG_VAL_SIRE_OFFSET 5
+#define IOPMP_ENTRY_CFG_VAL_SIRE_FIELD ((bitfield_bit32_index_t) IOPMP_ENTRY_CFG_VAL_SIRE_OFFSET)
+#define IOPMP_ENTRY_CFG_VAL_SIWE_OFFSET 6
+#define IOPMP_ENTRY_CFG_VAL_SIWE_FIELD ((bitfield_bit32_index_t) IOPMP_ENTRY_CFG_VAL_SIWE_OFFSET)
+#define IOPMP_ENTRY_CFG_VAL_SIXE_OFFSET 7
+#define IOPMP_ENTRY_CFG_VAL_SIXE_FIELD ((bitfield_bit32_index_t) IOPMP_ENTRY_CFG_VAL_SIXE_OFFSET)
+#define IOPMP_ENTRY_CFG_VAL_SERE_OFFSET 8
+#define IOPMP_ENTRY_CFG_VAL_SERE_FIELD ((bitfield_bit32_index_t) IOPMP_ENTRY_CFG_VAL_SERE_OFFSET)
+#define IOPMP_ENTRY_CFG_VAL_SEWE_OFFSET 9
+#define IOPMP_ENTRY_CFG_VAL_SEWE_FIELD ((bitfield_bit32_index_t) IOPMP_ENTRY_CFG_VAL_SEWE_OFFSET)
+#define IOPMP_ENTRY_CFG_VAL_SEXE_OFFSET 10
+#define IOPMP_ENTRY_CFG_VAL_SEXE_FIELD ((bitfield_bit32_index_t) IOPMP_ENTRY_CFG_VAL_SEXE_OFFSET)
+
 #ifdef __cplusplus
 extern "C" {
 #endif  // __cplusplus
@@ -110,6 +155,37 @@ OT_WARN_UNUSED_RESULT
 dif_result_t dif_iopmp_is_locked(
   const dif_iopmp_t *iopmp,
   bool *is_locked);
+
+// ERR_CFG.ie
+// (for local, per-entry, ENTRY_CFG for each entry WANNA re-read 2.7 before impl)
+// ERR_CFG.rsv1 & ERR_CFG.rsv2 must be 0 on write 
+void dif_iopmp_enable_global_irq_error_reaction(dif_iopmp_t* iopmp);
+
+typedef enum dif_iopmp_entry_addr_mode {
+  kDifIopmpEntryAddrModeOff,
+  kDifIopmpEntryAddrModeTor,
+  kDifIopmpEntryAddrModeNa4,
+  kDifIopmpEntryAddrModeNapot
+} dif_iopmp_entry_addr_mode_t;
+
+typedef struct dif_iopmp_entry_cfg {
+  dif_toggle_t r;
+  dif_toggle_t w;
+  dif_toggle_t x;
+  dif_iopmp_entry_addr_mode_t a;
+  dif_toggle_t sire;
+  dif_toggle_t siwe;
+  dif_toggle_t sixe;
+  dif_toggle_t sere;
+  dif_toggle_t sewe;
+  dif_toggle_t sexe;
+} dif_iopmp_entry_cfg_t;
+
+void dif_iopmp_md_mask_for_rrid(dif_iopmp_t* iopmp, size_t rrid, uint64_t md_mask, bool lock);
+
+void dif_iopmp_add_entry(dif_iopmp_t* iopmp, uint64_t entry_addr, const dif_iopmp_entry_cfg_t* entry_cfg);
+
+void dif_iopmp_mdcfg_set_top_range(dif_iopmp_t* iopmp, size_t md, size_t top_range);
 
 #ifdef __cplusplus
 }  // extern "C"
