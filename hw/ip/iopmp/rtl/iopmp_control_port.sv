@@ -99,7 +99,7 @@ tl_h2d_t reg_req_i;
 tl_d2h_t reg_rsp_o;
 
 assign reg_req_i   = mst_req_i;
-assign slv_rsp_o   = reg_rsp_o;
+//assign slv_rsp_o   = reg_rsp_o;
 
 // TileLink to register signal translation
 assign reg_wr_enable    = reg_req_i.a_valid & reg_rsp_o.a_ready & (reg_req_i.a_opcode == PutFullData || reg_req_i.a_opcode == PutPartialData);
@@ -275,6 +275,8 @@ logic               entry_addr_we[IOPMPRegions];
 logic [31:0]        entry_cfg_data_in[IOPMPRegions];
 logic               entry_cfg_we[IOPMPRegions];
 
+// Added integrity check error signal
+logic error_intg_chk;
 
 // Version register
 assign VERSION.vendor  = 24'hABCD;
@@ -315,6 +317,17 @@ assign HWCFG0.pees                      = `HW_ZERO;
 assign HWCFG0.mfr_en                    = `HW_ZERO;
 assign HWCFG0.rsv                       = {8{`HW_ZERO}};
 assign HWCFG0.md_num                    = IOPMPMemoryDomains;
+
+// OpenTitan also requires an integrity check on the TL-UL interface
+tlul_cmd_intg_chk tlul_cmd_intg_chk_0 (
+    .tl_i(mst_req_i),
+    .err_o(error_intg_chk)
+);
+// The integrity field also needs to be properly generated for response generation
+tlul_rsp_intg_gen tlul_rsp_intg_gen_0 (
+    .tl_i(reg_rsp_o),
+    .tl_o(slv_rsp_o)
+);
 
 iopmp_reg_handler #(
   .DataWidth(1),
@@ -845,7 +858,7 @@ always_comb begin
     mst_id_d                                = mst_id_q;
     opcode_d                                = opcode_q;
     reg_rr_data_d                           = reg_rr_data_q;
-    reg_error_d                             = reg_error_q;
+    reg_error_d                             = reg_error_q || error_intg_chk; // add integrity check error
     mst_param_d                             = mst_param_q;
     mst_size_d                              = mst_size_q;
     hwcfg0_prient_prog_we                   = '0;
@@ -887,7 +900,7 @@ always_comb begin
                 next_state                       = RESP;
                 mst_id_d                         = mst_id;
                 opcode_d                         = mst_opcode;
-                reg_error_d                      = 0;
+                reg_error_d                      = error_intg_chk; // add integrity check error
                 mst_size_d                       = mst_size;
                 mst_param_d                      = mst_param;
                 reg_rr_data_d                    = '0;

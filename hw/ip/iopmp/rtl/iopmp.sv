@@ -28,7 +28,8 @@ module iopmp #(
     parameter int unsigned IOPMPNumChan          =   1,
     parameter int unsigned IOPMPMemoryDomains    =   3,
     parameter int unsigned NUM_MASTERS           =   1,
-    parameter int unsigned IOPMPGranularity      =   1
+    parameter int unsigned IOPMPGranularity      =   1,
+    parameter bit active_low_reset               = 1'b0     // parameter indicates if the parent circuit is using active low reset
 )(
     input  logic                clk_i,
     input  logic                rst_ni,
@@ -82,6 +83,8 @@ logic [SourceWidth - 1 : 0 ]         rrid[IOPMPNumChan];
 
 logic [15:0]                         prio_entry_num;
 
+logic                                reset; // added an internal reset signal
+
 // interrupt generate
 assign intr_access_violation_o = irq_gen;
 assign irq_gen = (ERR_CFG.ie && ((ERR_REQINFO.ttype == read_access && !entry_conf[ERR_REQID.eid].sire) || (ERR_REQINFO.ttype == write_access && !entry_conf[ERR_REQID.eid].siwe)) && ERR_REQINFO.v) ? 1'b1 : 1'b0;
@@ -91,7 +94,11 @@ assign ERR_REQINFO = error_reg_o.ERR_REQINFO;
 assign ERR_CFG     = error_reg_o.ERR_CFG;
 assign ERR_REQID   = error_reg_o.ERR_REQID;
 
-
+if (active_low_reset) begin
+    assign reset = ~rst_ni; // active low reset
+end else begin
+    assign reset = rst_ni; // active high reset
+end
 
 iopmp_control_port #(
     .IOPMPRegions(IOPMPRegions),
@@ -99,7 +106,7 @@ iopmp_control_port #(
     .NUM_MASTERS(NUM_MASTERS)
 ) iopmp_control_port_0(
     .clk(clk_i),
-    .reset(rst_ni),
+    .reset(reset),
     .mst_req_i(cfg_tl_d_i),
     .slv_rsp_o(cfg_tl_d_o),
     .error_report_i(error_reg_o),
@@ -116,7 +123,7 @@ iopmp_req_handler_tlul #(
     .IOPMPRegions(IOPMPRegions)
 ) iopmp_req_handler_0(
     .clk(clk_i),
-    .rst(rst_ni),
+    .rst(reset),
     //.iopmp_req_err_o(iopmp_req_err_o),
     .mst_req_i(tl_i_req),
     .mst_rsp_o(tl_o_req),
@@ -148,7 +155,7 @@ iopmp_array_top #(
     .IOPMPMemoryDomains(IOPMPMemoryDomains)
 ) iopmp_array_top_0(
     .clk(clk_i),
-    .rst(rst_ni),
+    .rst(reset),
     .entry_conf(entry_conf),
     .entry_addr(entry_addr),
     .mdcfg_table(mdcfg_table),

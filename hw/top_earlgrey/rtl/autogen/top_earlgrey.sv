@@ -2722,7 +2722,8 @@ module top_earlgrey #(
     .IOPMPNumChan(IopmpIOPMPNumChan),
     .IOPMPMemoryDomains(IopmpIOPMPMemoryDomains),
     .NUM_MASTERS(IopmpNUM_MASTERS),
-    .IOPMPGranularity(IopmpIOPMPGranularity)
+    .IOPMPGranularity(IopmpIOPMPGranularity),
+    .active_low_reset(1'b1) // OpenTitan is reset by an active-low reset signal
   ) u_iopmp (
 
       // Interrupt
@@ -2735,7 +2736,8 @@ module top_earlgrey #(
       .cfg_tl_d_o(iopmp_cfg_tl_d_rsp),
 
       // Clock and reset connections
-      .clk_i (clkmgr_aon_clocks.clk_io_div4_peri),
+     // .clk_i (clkmgr_aon_clocks.clk_io_div4_peri), <--- Clock needs to match the bus clock
+      .clk_i(clkmgr_aon_clocks.clk_main_infra),
       .rst_ni (rstmgr_aon_resets.rst_lc_io_div4_n[rstmgr_pkg::Domain0Sel])
   );
   // interrupt assignments
