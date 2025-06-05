@@ -19,6 +19,13 @@
 // INFO registers
 #define IOPMP_VERSION_REG_OFFSET 0x0000
 #define IOPMP_IMPLEMENTATION_REG_OFFSET 0x0004
+#define IOPMP_HWCFG0_REG_OFFSET 0x0008
+  // add value bitfields for hwcfg0 as necessary
+#define IOPMP_HWCFG1_REG_OFFSET 0x000C
+  // add value bitfields for hwcfg1 as necessary
+#define IOPMP_HWCFG2_REG_OFFSET 0x0010
+  // add value bitfields for hwcfg2 as necessary
+#define IOPMP_ENTRYOFFSET_REG_OFFSET 0x0014
 
 // SRCMD table registers
 #define IOPMP_SRCMD_EN_REG_OFFSET 0x1000
@@ -31,7 +38,7 @@
 #define IOPMP_MDCFG_VAL_T_MASK 0xffffu
 #define IOPMP_MDCFG_VAL_T_OFFSET 0
 #define IOPMP_MDCFG_VAL_T_FIELD \
-  ((bitfield_field32_t) { .mask = IOPMP_MDCFG_VAL_T_MASK, .offset = IOPMP_MDCFG_VAL_T_OFFSET })
+  ((bitfield_field32_t) { .mask = IOPMP_MDCFG_VAL_T_MASK, .index = IOPMP_MDCFG_VAL_T_OFFSET })
 
 // Entry array registers
 // uses "rel" offsets because base offsets are unknown at compile-time
@@ -47,7 +54,7 @@
 #define IOPMP_ENTRY_CFG_VAL_A_OFFSET 3
 #define IOPMP_ENTRY_CFG_VAL_A_MASK 0x3u
 #define IOPMP_ENTRY_CFG_VAL_A_FIELD \
-  ((bitfield_field32_t) { .mask = IOPMP_ENTRY_CFG_VAL_A_MASK, offset = IOPMP_ENTRY_CFG_VAL_A_OFFSET })
+  ((bitfield_field32_t) { .mask = IOPMP_ENTRY_CFG_VAL_A_MASK, .index = IOPMP_ENTRY_CFG_VAL_A_OFFSET })
 #define IOPMP_ENTRY_CFG_VAL_SIRE_OFFSET 5
 #define IOPMP_ENTRY_CFG_VAL_SIRE_FIELD ((bitfield_bit32_index_t) IOPMP_ENTRY_CFG_VAL_SIRE_OFFSET)
 #define IOPMP_ENTRY_CFG_VAL_SIWE_OFFSET 6
@@ -72,7 +79,7 @@ extern "C" {
  * configuration of the hardware.
  */
 typedef struct dif_iopmp_config {
-  uint8_t unused;
+  int32_t entryoffset;
 } dif_iopmp_config_t;
 
 
@@ -90,20 +97,20 @@ typedef struct dif_iopmp_output {
   uint8_t unused;
 } dif_iopmp_output_t;
 
-/**
- * Configures IOPMP with runtime information.
- *
- * This function should only need to be called once for the lifetime of
- * `handle`.
- *
- * @param iopmp A IOPMP handle.
- * @param config Runtime configuration parameters.
- * @return The result of the operation.
- */
-OT_WARN_UNUSED_RESULT
-dif_result_t dif_iopmp_configure(
-  const dif_iopmp_t *iopmp,
-  dif_iopmp_config_t config);
+// /**
+//  * Configures IOPMP with runtime information.
+//  *
+//  * This function should only need to be called once for the lifetime of
+//  * `handle`.
+//  *
+//  * @param iopmp A IOPMP handle.
+//  * @param config Runtime configuration parameters.
+//  * @return The result of the operation.
+//  */
+// OT_WARN_UNUSED_RESULT
+// dif_result_t dif_iopmp_configure(
+//   const dif_iopmp_t *iopmp,
+//   dif_iopmp_config_t config);
 
 /**
  * Begins a IOPMP transaction.
@@ -156,6 +163,8 @@ dif_result_t dif_iopmp_is_locked(
   const dif_iopmp_t *iopmp,
   bool *is_locked);
 
+void dif_iopmp_get_config(dif_iopmp_t* iopmp, dif_iopmp_config_t* config);
+
 // ERR_CFG.ie
 // (for local, per-entry, ENTRY_CFG for each entry WANNA re-read 2.7 before impl)
 // ERR_CFG.rsv1 & ERR_CFG.rsv2 must be 0 on write 
@@ -181,11 +190,11 @@ typedef struct dif_iopmp_entry_cfg {
   dif_toggle_t sexe;
 } dif_iopmp_entry_cfg_t;
 
-void dif_iopmp_md_mask_for_rrid(dif_iopmp_t* iopmp, size_t rrid, uint64_t md_mask, bool lock);
+void dif_iopmp_md_mask_for_rrid(dif_iopmp_t* iopmp, uint32_t rrid, uint64_t md_mask, bool lock);
 
-void dif_iopmp_add_entry(dif_iopmp_t* iopmp, uint64_t entry_addr, const dif_iopmp_entry_cfg_t* entry_cfg);
+void dif_iopmp_add_entry(dif_iopmp_t* iopmp, const dif_iopmp_config_t* iopmp_cfg, uint32_t entry_addr, const dif_iopmp_entry_cfg_t* entry_cfg);
 
-void dif_iopmp_mdcfg_set_top_range(dif_iopmp_t* iopmp, size_t md, size_t top_range);
+void dif_iopmp_mdcfg_set_top_range(dif_iopmp_t* iopmp, uint32_t md, uint32_t top_range);
 
 #ifdef __cplusplus
 }  // extern "C"

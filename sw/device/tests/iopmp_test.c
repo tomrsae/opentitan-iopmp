@@ -18,13 +18,17 @@ bool test_main(void) {
   CHECK_DIF_OK(dif_iopmp_init(
       mmio_region_from_addr(TOP_EARLGREY_IOPMP_CFG_BASE_ADDR), &iopmp));
 
+  dif_iopmp_config_t iopmp_cfg;
+  dif_iopmp_get_config(&iopmp, &iopmp_cfg);
+  
+  LOG_INFO("Entry offset: 0x%08x", iopmp_cfg.entryoffset);
+
   const ptrdiff_t entry1_addr = 0x0000ffffu;
   const ptrdiff_t entry2_addr = 0x0001ffffu;
   const ptrdiff_t entry3_addr = 0x0002ffffu;
   const ptrdiff_t entry4_addr = 0x0003ffffu;
   const ptrdiff_t entry5_addr = 0x0004ffffu;
   const ptrdiff_t entry6_addr = 0x0005ffffu;
-  const ptrdiff_t entry7_addr = 0x0006ffffu;
 
   // common config for test simplicity
   dif_iopmp_entry_cfg_t entry_cfg = {
@@ -50,19 +54,15 @@ bool test_main(void) {
   // |            | MD_001     | Example entry 3             |
   // |            |            | Example entry 4             |
   // +------------+------------+-----------------------------+
-  // | RRID_00001 | MD_002     | Example entry 5             |
-  // |            |            | Example entry 6             |
-  // +------------+------------+-----------------------------+
 
   // add all entries
 
-  dif_iopmp_add_entry(&iopmp, entry1_addr, &entry_cfg);
-  dif_iopmp_add_entry(&iopmp, entry2_addr, &entry_cfg);
-  dif_iopmp_add_entry(&iopmp, entry3_addr, &entry_cfg);
-  dif_iopmp_add_entry(&iopmp, entry4_addr, &entry_cfg);
-  dif_iopmp_add_entry(&iopmp, entry5_addr, &entry_cfg);
-  dif_iopmp_add_entry(&iopmp, entry6_addr, &entry_cfg);
-  dif_iopmp_add_entry(&iopmp, entry7_addr, &entry_cfg);
+  dif_iopmp_add_entry(&iopmp, &iopmp_cfg, entry1_addr, &entry_cfg);
+  dif_iopmp_add_entry(&iopmp, &iopmp_cfg, entry2_addr, &entry_cfg);
+  dif_iopmp_add_entry(&iopmp, &iopmp_cfg, entry3_addr, &entry_cfg);
+  dif_iopmp_add_entry(&iopmp, &iopmp_cfg, entry4_addr, &entry_cfg);
+  dif_iopmp_add_entry(&iopmp, &iopmp_cfg, entry5_addr, &entry_cfg);
+  dif_iopmp_add_entry(&iopmp, &iopmp_cfg, entry6_addr, &entry_cfg);
 
   // configure what entries belong to what MDs
 
@@ -70,13 +70,9 @@ bool test_main(void) {
   dif_iopmp_mdcfg_set_top_range(&iopmp, 0, 3);
   // MDCFG(0).t = 3 & MDCFG(1).t = 5 ==> MD 1 has entry 3, 4
   dif_iopmp_mdcfg_set_top_range(&iopmp, 1, 5);
-  // MDCFG(1).t = 5 & MDCFG(2).t = 7 ==> MD 2 has entry 5, 6
-  dif_iopmp_mdcfg_set_top_range(&iopmp, 2, 7);
 
   // assign RRIDs to MDs
-
   dif_iopmp_md_mask_for_rrid(&iopmp, 0, 3, true); // 3 = 0b0011 ==> first two MDs, with lock
-  dif_iopmp_md_mask_for_rrid(&iopmp, 1, 4, false); // 4 = 0b0100 ==> third MD, no lock
 
   return true;
 }

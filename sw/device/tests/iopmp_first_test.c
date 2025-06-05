@@ -12,7 +12,7 @@
 
 // INFO registers
 #define IOPMP_VERSION_REG_OFFSET 0x0000
-#define IOPMP_IMPLEMENTATION_REG_OFFSET 0x0004
+#define IOPMP_IMPLEMENTATION_REG_OFFSET 0x0014
 
 OTTF_DEFINE_TEST_CONFIG();
 
@@ -32,7 +32,10 @@ bool test_main(void) {
   reg_val = mmio_region_read32(iopmp_mmio_region, IOPMP_IMPLEMENTATION_REG_OFFSET);
 
   LOG_INFO("3");
-  LOG_INFO("Register value: 0x%08x", reg_val);
+  LOG_INFO("impl: 0x%08x", reg_val);
+
+  reg_val = mmio_region_read32(iopmp_mmio_region, IOPMP_VERSION_REG_OFFSET);
+  LOG_INFO("ver: 0x%08x", reg_val);
 
   test_status_set(kTestStatusPassed);
 
