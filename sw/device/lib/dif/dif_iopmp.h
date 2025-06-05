@@ -29,7 +29,6 @@
 
 // SRCMD table registers
 #define IOPMP_SRCMD_EN_REG_OFFSET 0x1000
-#define IOPMP_SRCMD_ENH_REG_OFFSET 0x1004
 #define IOPMP_SRCMD_ENTRY_SIZE 32
 
 // MDCFG table registers
@@ -190,11 +189,19 @@ typedef struct dif_iopmp_entry_cfg {
   dif_toggle_t sexe;
 } dif_iopmp_entry_cfg_t;
 
-void dif_iopmp_md_mask_for_rrid(dif_iopmp_t* iopmp, uint32_t rrid, uint64_t md_mask, bool lock);
+void dif_iopmp_set_md_mask_for_rrid(dif_iopmp_t* iopmp, uint32_t rrid, uint32_t md_mask, bool lock);
+
+void dif_iopmp_get_md_mask_for_rrid(dif_iopmp_t* iopmp, uint32_t rrid, uint32_t* md_mask, bool* is_locked);
 
 void dif_iopmp_add_entry(dif_iopmp_t* iopmp, const dif_iopmp_config_t* iopmp_cfg, uint32_t entry_addr, const dif_iopmp_entry_cfg_t* entry_cfg);
 
+void dif_iopmp_get_entry(dif_iopmp_t* iopmp, const dif_iopmp_config_t* iopmp_cfg, int entry, uint32_t* entry_addr, dif_iopmp_entry_cfg_t* entry_cfg);
+
 void dif_iopmp_mdcfg_set_top_range(dif_iopmp_t* iopmp, uint32_t md, uint32_t top_range);
+
+void dif_iopmp_mdcfg_get_top_range(dif_iopmp_t* iopmp, uint32_t md, uint32_t* top_range);
+
+bool dif_iopmp_cmp_entry_cfg(const dif_iopmp_entry_cfg_t* self, const dif_iopmp_entry_cfg_t* other);
 
 #ifdef __cplusplus
 }  // extern "C"
