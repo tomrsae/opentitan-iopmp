@@ -3278,6 +3278,8 @@ pub enum GateableClocks {
     IoPeri = 2,
     /// Clock clk_usb_peri in group peri
     UsbPeri = 3,
+    /// Clock clk_main_peri in group peri
+    MainPeri = 4,
 }
 
 /// Clock Manager Software-Hinted Clocks.

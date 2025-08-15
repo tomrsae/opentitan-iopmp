@@ -50,7 +50,7 @@
     { name: "NLpg",
       desc: "Number of LPGs.",
       type: "int",
-      default: "24",
+      default: "25",
       local: "true"
     },
     { name: "NLpgWidth",

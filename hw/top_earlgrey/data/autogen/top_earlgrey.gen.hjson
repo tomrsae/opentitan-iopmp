@@ -159,6 +159,7 @@
           clk_io_peri: io
           clk_usb_peri: usb
           clk_aon_peri: aon
+          clk_main_peri: main
         }
       }
       {
@@ -8864,20 +8865,20 @@
       type: iopmp
       clock_srcs:
       {
-        clk_i: io_div4
+        clk_i: main
       }
       clock_group: peri
       reset_connections:
       {
         rst_ni:
         {
-          name: lc_io_div4
+          name: lc
           domain: "0"
         }
       }
       clock_connections:
       {
-        clk_i: clkmgr_aon_clocks.clk_io_div4_peri
+        clk_i: clkmgr_aon_clocks.clk_main_peri
       }
       domain:
       [
@@ -8931,6 +8932,15 @@
           local: "false"
           expose: "true"
           name_top: IopmpIOPMPGranularity
+        }
+        {
+          name: active_low_reset
+          desc: ??
+          type: int
+          default: "1"
+          local: "false"
+          expose: "true"
+          name_top: Iopmpactive_low_reset
         }
       ]
       inter_signal_list:
@@ -16465,6 +16475,7 @@
           clk_io_peri: io
           clk_usb_peri: usb
           clk_aon_peri: aon
+          clk_main_peri: main
         }
       }
       clock_connection: clkmgr_aon_clocks.clk_io_div4_peri
@@ -16490,6 +16501,7 @@
           clk_io_peri: io
           clk_usb_peri: usb
           clk_aon_peri: aon
+          clk_main_peri: main
         }
       }
       clock_connection: clkmgr_aon_clocks.clk_io_div4_peri
@@ -16515,6 +16527,7 @@
           clk_io_peri: io
           clk_usb_peri: usb
           clk_aon_peri: aon
+          clk_main_peri: main
         }
       }
       clock_connection: clkmgr_aon_clocks.clk_io_div4_peri
@@ -16540,6 +16553,7 @@
           clk_io_peri: io
           clk_usb_peri: usb
           clk_aon_peri: aon
+          clk_main_peri: main
         }
       }
       clock_connection: clkmgr_aon_clocks.clk_io_div4_peri
@@ -16565,6 +16579,7 @@
           clk_io_peri: io
           clk_usb_peri: usb
           clk_aon_peri: aon
+          clk_main_peri: main
         }
       }
       clock_connection: clkmgr_aon_clocks.clk_io_div4_peri
@@ -16635,6 +16650,7 @@
           clk_io_peri: io
           clk_usb_peri: usb
           clk_aon_peri: aon
+          clk_main_peri: main
         }
       }
       clock_connection: clkmgr_aon_clocks.clk_io_peri
@@ -16660,6 +16676,7 @@
           clk_io_peri: io
           clk_usb_peri: usb
           clk_aon_peri: aon
+          clk_main_peri: main
         }
       }
       clock_connection: clkmgr_aon_clocks.clk_io_div2_peri
@@ -16685,6 +16702,7 @@
           clk_io_peri: io
           clk_usb_peri: usb
           clk_aon_peri: aon
+          clk_main_peri: main
         }
       }
       clock_connection: clkmgr_aon_clocks.clk_usb_peri
@@ -16785,6 +16803,7 @@
           clk_io_peri: io
           clk_usb_peri: usb
           clk_aon_peri: aon
+          clk_main_peri: main
         }
       }
       clock_connection: clkmgr_aon_clocks.clk_io_div4_peri
@@ -17029,6 +17048,32 @@
         }
       }
       clock_connection: clkmgr_aon_clocks.clk_main_otbn
+      unmanaged_clock: false
+      reset_connection:
+      {
+        name: lc
+        domain: "0"
+      }
+    }
+    {
+      name: peri_lc_0
+      clock_group:
+      {
+        name: peri
+        src: top
+        sw_cg: yes
+        unique: no
+        clocks:
+        {
+          clk_io_div4_peri: io_div4
+          clk_io_div2_peri: io_div2
+          clk_io_peri: io
+          clk_usb_peri: usb
+          clk_aon_peri: aon
+          clk_main_peri: main
+        }
+      }
+      clock_connection: clkmgr_aon_clocks.clk_main_peri
       unmanaged_clock: false
       reset_connection:
       {

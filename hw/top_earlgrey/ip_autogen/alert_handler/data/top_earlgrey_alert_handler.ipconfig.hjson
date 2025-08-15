@@ -77,7 +77,7 @@
       1'b1
     ]
     n_classes: 4
-    n_lpg: 24
+    n_lpg: 25
     lpg_map:
     [
       5'd0

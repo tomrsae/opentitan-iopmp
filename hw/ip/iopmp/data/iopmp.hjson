@@ -57,6 +57,13 @@
       local:   "false",
       expose:  "true"
     },
+    { name:    "active_low_reset",
+      type:    "int",
+      default: "1",
+      desc:    "??"
+      local:   "false",
+      expose:  "true"
+    },
   ],
   interrupt_list: [
     { name: "access_violation"

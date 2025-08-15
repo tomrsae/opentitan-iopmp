@@ -207,6 +207,11 @@
           src_name: usb
           endpoint_ip: usbdev
         }
+        clk_main_peri:
+        {
+          src_name: main
+          endpoint_ip: iopmp
+        }
       }
       hint_clks:
       {

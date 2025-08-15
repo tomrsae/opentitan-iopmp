@@ -40,6 +40,7 @@ package clkmgr_pkg;
     logic clk_io_div2_peri;
     logic clk_io_peri;
     logic clk_usb_peri;
+    logic clk_main_peri;
   } clkmgr_out_t;
 
   // clock gating indication for alert handler
@@ -69,9 +70,10 @@ package clkmgr_pkg;
     prim_mubi_pkg::mubi4_t io_div2_peri;
     prim_mubi_pkg::mubi4_t io_peri;
     prim_mubi_pkg::mubi4_t usb_peri;
+    prim_mubi_pkg::mubi4_t main_peri;
   } clkmgr_cg_en_t;
 
-  parameter int NumOutputClk = 25;
+  parameter int NumOutputClk = 26;
 
 
   typedef struct packed {

@@ -70,6 +70,15 @@ module clkmgr_bind;
     .gated_clk(clocks_o.clk_usb_peri)
   );
 
+  bind clkmgr clkmgr_gated_clock_sva_if clkmgr_main_peri_sva_if (
+    .clk(clocks_o.clk_main_powerup),
+    .rst_n(rst_main_ni),
+    .ip_clk_en(pwr_i.main_ip_clk_en),
+    .sw_clk_en(clk_main_peri_sw_en),
+    .scanmode(scanmode_i == prim_mubi_pkg::MuBi4True),
+    .gated_clk(clocks_o.clk_main_peri)
+  );
+
   // Assertions for transactional clocks.
   bind clkmgr clkmgr_trans_sva_if clkmgr_aes_trans_sva_if (
     .clk(clk_main_i),
@@ -289,6 +298,15 @@ module clkmgr_bind;
     .sw_clk_en(clk_usb_peri_sw_en),
     .scanmode(prim_mubi_pkg::MuBi4False),
     .cg_en(cg_en_o.usb_peri == prim_mubi_pkg::MuBi4True)
+  );
+
+  bind clkmgr clkmgr_cg_en_sva_if clkmgr_cg_main_peri (
+    .clk(clk_main),
+    .rst_n(rst_main_ni),
+    .ip_clk_en(clk_main_en),
+    .sw_clk_en(clk_main_peri_sw_en),
+    .scanmode(prim_mubi_pkg::MuBi4False),
+    .cg_en(cg_en_o.main_peri == prim_mubi_pkg::MuBi4True)
   );
 
   // Hint controlled gating enables.

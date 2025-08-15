@@ -8,7 +8,7 @@ package alert_handler_reg_pkg;
 
   // Param list
   parameter int NAlerts = 65;
-  parameter int NLpg = 24;
+  parameter int NLpg = 25;
   parameter int NLpgWidth = 5;
   parameter logic [NAlerts-1:0][NLpgWidth-1:0] LpgMap = {
   5'd17,
